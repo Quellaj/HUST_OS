@@ -43,7 +43,7 @@ void V(int semid,int index)
 }
 
 void *cacuf(void*){
-        for(int i=0;i<MAX;i++)
+        for(int i=0;i<=MAX;i++)
         {
                P(semid,0);
                a+=i;
@@ -55,23 +55,27 @@ void *cacuf(void*){
 	}	
 }
 void *print1_even(void*){
-	while(a<=5150){
+	while(1){
+	
 		P(semid,1);
+	       
 		cout<<"phread1 print even num: "<<a<<endl;
+		 if(a==5050) break;
+	        
 		V(semid,0);
-		if((a==MAX-1)&&(MAX%2)){
-			break;
-		}
+		
 	}
 }
 void *print2_odd(void*){
-	while(a<=5050){
+	while(1){
 		P(semid,2);
+		if(a<=4851)
+		{
 		cout<<"phread2 print odd num: "<<a<<endl;
-		V(semid,0);
-		if((a==MAX-1)&&!(MAX%2)){
-			break;
-		}
+		V(semid,0);}
+		else
+		break;
+		
 	}
 }
 int main(){
@@ -79,7 +83,7 @@ int main(){
 	int key=ftok("/tmp",0x66);
 	if(key<0){
 		cout<<"ftok error!";
-		return 1;
+		exit(0);
 	}
 	semid = semget(key,3,IPC_CREAT|0666);  //使用3个信号量
 	//0号：init=1 表计算进程的资源数
